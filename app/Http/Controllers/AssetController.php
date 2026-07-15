@@ -25,6 +25,11 @@ class AssetController extends Controller
         })->values();
     }
 
+    public function __construct()
+    {
+        $this->middleware('role:admin,it_staff')->only(['create', 'store', 'edit', 'update']);
+    }
+
     public function index(): View
     {
         $assets = Asset::query()
