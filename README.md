@@ -1,2 +1,1 @@
-# CMIS
-Computer Management Inventory System
+# CMIS\r\nComputer Management Inventory System\r\n
