@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AssetController;
-use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -33,17 +32,12 @@ Route::resource('categories', CategoryController::class)->except(['show']);
 Route::resource('locations', LocationController::class);
 Route::resource('divisions', DivisionController::class);
 
-// --- Phase 2: assignment & maintenance require login ---
+// --- Phase 2: maintenance requires login ---
 Route::middleware('auth')->group(function () {
-    Route::get('assignments', [AssignmentController::class, 'index'])->name('assignments.index');
     Route::get('maintenance', [MaintenanceRecordController::class, 'index'])->name('maintenance.index');
 
-    // Only Admin / IT Staff can create or modify assignments and tickets
+    // Only Admin / IT Staff can create or modify tickets
     Route::middleware('role:admin,it_staff')->group(function () {
-        Route::get('assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
-        Route::post('assignments', [AssignmentController::class, 'store'])->name('assignments.store');
-        Route::patch('assignments/{assignment}/check-in', [AssignmentController::class, 'checkIn'])->name('assignments.check-in');
-
         Route::get('maintenance/create', [MaintenanceRecordController::class, 'create'])->name('maintenance.create');
         Route::post('maintenance', [MaintenanceRecordController::class, 'store'])->name('maintenance.store');
         Route::get('maintenance/{maintenance}/edit', [MaintenanceRecordController::class, 'edit'])->name('maintenance.edit');

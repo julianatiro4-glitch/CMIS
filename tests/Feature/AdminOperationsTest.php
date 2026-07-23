@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Asset;
-use App\Models\Assignment;
 use App\Models\Category;
 use App\Models\Location;
 use App\Models\Division;
@@ -71,77 +70,21 @@ class AdminOperationsTest extends TestCase
     public function test_route_access_permissions(): void
     {
         // Guests should be redirected
-        $this->get('/assignments')->assertRedirect(route('login'));
         $this->get('/maintenance')->assertRedirect(route('login'));
         $this->get('/activity-logs')->assertRedirect(route('login'));
 
-        // Viewers can view list but cannot create/modify
+        // Viewers can view list but cannot modify maintenance tickets
         $this->actingAs($this->viewer);
-        $this->get('/assignments')->assertOk();
         $this->get('/maintenance')->assertOk();
         $this->get('/activity-logs')->assertOk();
-        $this->get('/assignments/create')->assertForbidden(); // Only admin / it_staff can create/modify
+        $this->get('/assets/create')->assertStatus(403);
 
         // IT Staff and Admins can access forms
         $this->actingAs($this->itStaff);
-        $this->get('/assignments/create')->assertOk();
         $this->get('/maintenance/create')->assertOk();
-    }
-
-    /**
-     * Test checkout (assign) asset workflow.
-     */
-    public function test_asset_checkout_and_checkin_flow(): void
-    {
-        $this->actingAs($this->admin);
-
-        // Verify starting state
-        $this->assertEquals('available', $this->asset->status);
-
-        // 1. Checkout
-        $checkoutData = [
-            'asset_id' => $this->asset->id,
-            'user_id' => $this->viewer->id,
-            'assigned_at' => now()->format('Y-m-d H:i:s'),
-            'notes' => 'Assigned for design work',
-        ];
-
-        $response = $this->post('/assignments', $checkoutData);
-        $response->assertRedirect(route('assignments.index'));
-
-        // Verify status changed to 'in_use'
-        $this->asset->refresh();
-        $this->assertEquals('in_use', $this->asset->status);
-
-        // Verify assignment record created
-        $assignment = Assignment::where('asset_id', $this->asset->id)->whereNull('returned_at')->first();
-        $this->assertNotNull($assignment);
-        $this->assertEquals($this->viewer->id, $assignment->user_id);
-
-        // Verify activity log created
-        $log = ActivityLog::where('model_type', Assignment::class)->first();
-        $this->assertNotNull($log);
-        $this->assertEquals('created', $log->action);
-        $this->assertStringContainsString('CMP-0001', $log->model_label);
-
-        // 2. Checkin
-        $response = $this->patch("/assignments/{$assignment->id}/check-in", [
-            'condition_on_return' => 'Returned in pristine condition',
-        ]);
-        $response->assertRedirect(route('assignments.index'));
-
-        // Verify status changed back to 'available'
-        $this->asset->refresh();
-        $this->assertEquals('available', $this->asset->status);
-
-        // Verify returned_at is filled
-        $assignment->refresh();
-        $this->assertNotNull($assignment->returned_at);
-        $this->assertEquals('Returned in pristine condition', $assignment->condition_on_return);
-
-        // Verify activity log created for the update
-        $updateLog = ActivityLog::where('model_type', Assignment::class)->where('action', 'updated')->first();
-        $this->assertNotNull($updateLog);
+        $this->get('/assets/create')->assertOk();
+        $this->get("/assets/{$this->asset->id}")->assertOk();
+        $this->get('/assets')->assertOk();
     }
 
     /**

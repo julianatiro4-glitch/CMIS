@@ -78,27 +78,6 @@
 
         </form>
 
-        <div class="mt-6 pt-5 border-t border-slate-100">
-            <p class="text-xs font-bold text-slate-400 mb-2">Demo accounts</p>
-            <div class="space-y-1.5">
-                <div class="flex justify-between items-center text-xs bg-slate-50 rounded-lg px-3 py-2">
-                    <span class="text-slate-600">admin@example.com</span>
-                    <span class="font-bold px-2 py-0.5 rounded-full text-xs"
-                          style="background:#fef9e7;color:#92400e;">Admin</span>
-                </div>
-                <div class="flex justify-between items-center text-xs bg-slate-50 rounded-lg px-3 py-2">
-                    <span class="text-slate-600">staff@example.com</span>
-                    <span class="font-bold px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">IT Staff</span>
-                </div>
-                <div class="flex justify-between items-center text-xs bg-slate-50 rounded-lg px-3 py-2">
-                    <span class="text-slate-600">viewer@example.com</span>
-                    <span class="font-bold px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-500">Viewer</span>
-                </div>
-                <p class="text-xs text-slate-400 text-center pt-1">
-                    All passwords: <code class="bg-slate-100 px-1.5 py-0.5 rounded">password</code>
-                </p>
-            </div>
-        </div>
 
     </div>
 </div>

@@ -25,17 +25,11 @@ class AssetController extends Controller
         })->values();
     }
 
-    public function __construct()
-    {
-        $this->middleware('role:admin,it_staff')->only(['create', 'store', 'edit', 'update']);
-    }
-
     public function index(): View
     {
         $assets = Asset::query()
             ->with(['category', 'location', 'division'])
             ->search(request('q'))
-            ->status(request('status'))
             ->when(request('division_id'),  fn($q, $id)   => $q->where('division_id', $id))
             ->when(request('category_id'),  fn($q, $id)   => $q->where('category_id', $id))
             ->when(request('condition'),    fn($q, $cond) => $q->where('condition', $cond))
@@ -45,14 +39,10 @@ class AssetController extends Controller
 
         $stats = [
             'total'     => Asset::count(),
-            'available' => Asset::where('status', 'available')->count(),
-            'in_use'    => Asset::where('status', 'in_use')->count(),
-            'in_repair' => Asset::where('status', 'in_repair')->count(),
         ];
 
         return view('assets.index', [
             'assets'     => $assets,
-            'statuses'   => Asset::STATUSES,
             'divisions'  => $this->orderedDivisions(),
             'categories' => Category::orderBy('name')->get(),
             'stats'      => $stats,
@@ -65,7 +55,6 @@ class AssetController extends Controller
             'categories' => Category::orderBy('name')->get(),
             'locations'  => Location::orderBy('name')->get(),
             'divisions'  => $this->orderedDivisions(),
-            'statuses'   => Asset::STATUSES,
         ];
     }
 
@@ -126,6 +115,19 @@ class AssetController extends Controller
         return redirect()->route('assets.index')->with('error', 'No assets selected.');
     }
 
+    public function bulkForceDelete(\Illuminate\Http\Request $request): RedirectResponse
+    {
+        $ids = $request->input('ids', []);
+        if (!empty($ids)) {
+            $assets = Asset::onlyTrashed()->whereIn('id', $ids)->get();
+            foreach ($assets as $asset) {
+                $asset->forceDelete();
+            }
+            return redirect()->route('assets.trash')->with('status', count($ids) . ' assets permanently deleted.');
+        }
+        return redirect()->route('assets.trash')->with('error', 'No assets selected.');
+    }
+
     public function export(): StreamedResponse
     {
         $assets = Asset::query()
@@ -146,11 +148,10 @@ class AssetController extends Controller
             $handle = fopen('php://output', 'w');
             fputcsv($handle, [
                 'Asset Tag','Name','Equipment Type','Location','Division',
-                'Brand','Model','Serial Number','Status','Condition',
-                'CPU','RAM (Total)','RAM (Used)','Storage','Storage Device',
-                'OS','Hostname','Utilized By','Ownership','Connectivity',
+                'Model','Serial Number','Status','Condition',
+                'CPU','RAM (Total)','RAM (Used)','Storage',
+                'OS','Utilized By','Ownership','Connectivity',
                 'WiFi Network','CrowdStrike','Software Installed',
-                'Purchase Date','Purchase Cost','Warranty Expiry',
             ]);
             foreach ($assets as $a) {
                 fputcsv($handle, [
@@ -158,17 +159,14 @@ class AssetController extends Controller
                     $a->category->name,
                     $a->location?->name,
                     $a->division ? ($a->division->code.' - '.$a->division->name) : null,
-                    $a->brand, $a->model, $a->serial_number,
+                    $a->model, $a->serial_number,
                     $a->status, $a->condition,
                     $a->cpu, $a->ram_total, $a->ram_used,
-                    $a->storage_capacity, $a->storage_device,
-                    $a->operating_system, $a->hostname, $a->utilized_by,
+                    $a->storage_capacity,
+                    $a->operating_system, $a->utilized_by,
                     $a->ownership_type, $a->connectivity, $a->wifi_network,
                     $a->has_crowdstrike ? 'YES' : 'NO',
                     $a->software_installed,
-                    $a->purchase_date?->toDateString(),
-                    $a->purchase_cost,
-                    $a->warranty_expiry?->toDateString(),
                 ]);
             }
             fclose($handle);

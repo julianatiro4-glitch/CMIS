@@ -21,17 +21,17 @@
             <div class="px-5 py-4 text-center" style="background:#0d2a5e;">
                 <p class="font-mono font-bold text-2xl text-white tracking-widest">{{ $asset->asset_tag }}</p>
                 <p class="text-blue-200 text-sm mt-0.5">{{ $asset->name }}</p>
-                <p class="text-blue-300 text-xs">{{ $asset->brand }} {{ $asset->model }}</p>
+                <p class="text-blue-300 text-xs">{{ $asset->model }}</p>
             </div>
 
-            {{-- Status badge --}}
+            {{-- Condition badge --}}
             @php
-            $badge = ['available'=>'bg-green-100 text-green-700','in_use'=>'bg-blue-100 text-blue-700','in_repair'=>'bg-amber-100 text-amber-700','retired'=>'bg-slate-100 text-slate-500','lost'=>'bg-red-100 text-red-700'];
+            $conditionColors = ['good'=>'bg-green-100 text-green-700','fair'=>'bg-yellow-100 text-yellow-700','for_repair'=>'bg-orange-100 text-orange-700','unserviceable'=>'bg-red-100 text-red-700'];
             @endphp
             <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
                 <span class="text-xs font-semibold text-slate-500">Status</span>
-                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $badge[$asset->status] ?? 'bg-slate-100 text-slate-500' }}">
-                    {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
+                <span class="px-3 py-1 rounded-full text-xs font-bold {{ $conditionColors[$asset->condition ?? 'good'] ?? 'bg-slate-100 text-slate-500' }}">
+                    {{ ucfirst(str_replace('_', ' ', $asset->condition ?? 'good')) }}
                 </span>
             </div>
 
@@ -52,12 +52,7 @@
                     <span class="font-semibold text-slate-800">{{ $asset->utilized_by }}</span>
                 </div>
                 @endif
-                @if ($asset->hostname)
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-400">Hostname</span>
-                    <span class="font-mono font-semibold text-slate-800">{{ $asset->hostname }}</span>
-                </div>
-                @endif
+
                 @if ($asset->cpu)
                 <div class="flex justify-between text-sm">
                     <span class="text-slate-400">CPU</span>
@@ -82,10 +77,7 @@
                     <span class="font-mono font-semibold text-slate-800">{{ $asset->serial_number }}</span>
                 </div>
                 @endif
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-400">Condition</span>
-                    <span class="font-semibold text-slate-800">{{ ucfirst(str_replace('_', ' ', $asset->condition ?? 'good')) }}</span>
-                </div>
+
             </div>
 
             <div class="px-5 pb-5">

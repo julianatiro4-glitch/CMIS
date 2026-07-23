@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
             $table->string('serial_number')->nullable()->unique();
-            $table->enum('status', ['available', 'in_use', 'in_repair', 'retired', 'lost'])
+            $table->enum('status', ['available', 'in_use', 'under_maintenance', 'defective', 'for_replacement'])
                 ->default('available');
             $table->date('purchase_date')->nullable();
             $table->decimal('purchase_cost', 12, 2)->nullable();

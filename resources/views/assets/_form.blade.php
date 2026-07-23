@@ -25,10 +25,7 @@
             <input type="text" name="serial_number" value="{{ old('serial_number', $asset->serial_number ?? '') }}" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500">
             @error('serial_number') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
-        <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Brand</label>
-            <input type="text" name="brand" value="{{ old('brand', $asset->brand ?? '') }}" placeholder="e.g. Dell, HP, Lenovo" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+
         <div>
             <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Equipment Type</label>
             <select name="category_id" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -40,15 +37,7 @@
             @error('category_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
         <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Status</label>
-            <select name="status" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                @foreach ($statuses as $status)
-                    <option value="{{ $status }}" @selected(old('status', $asset->status ?? 'available') === $status)>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Physical Condition</label>
+            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Condition</label>
             <select name="condition" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 @foreach (\App\Models\Asset::CONDITIONS as $condition)
                     <option value="{{ $condition }}" @selected(old('condition', $asset->condition ?? 'good') === $condition)>{{ ucfirst(str_replace('_', ' ', $condition)) }}</option>
@@ -70,7 +59,7 @@
     <div class="flex items-center gap-2 mb-5 pb-2 border-b-2 border-blue-100">
         <span class="w-7 h-7 rounded-lg bg-blue-600 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">2</span>
         <h3 class="font-bold text-slate-700 text-base">Hardware Specifications</h3>
-        <span class="text-xs text-slate-400">CPU, RAM, Storage, OS, Hostname</span>
+        <span class="text-xs text-slate-400">CPU, RAM, Storage, OS</span>
     </div>
     <div class="bg-blue-50 border border-blue-100 rounded-xl p-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -96,10 +85,7 @@
                     @endforeach
                 </select>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-blue-800 mb-1.5 uppercase tracking-wide">Storage Device Model</label>
-                <input type="text" name="storage_device" value="{{ old('storage_device', $asset->storage_device ?? '') }}" placeholder="e.g. Samsung 870 EVO, WD Blue SN580" class="w-full border border-blue-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+
             <div>
                 <label class="block text-xs font-bold text-blue-800 mb-1.5 uppercase tracking-wide">Operating System</label>
                 <select name="operating_system" class="w-full border border-blue-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -109,10 +95,7 @@
                     @endforeach
                 </select>
             </div>
-            <div>
-                <label class="block text-xs font-bold text-blue-800 mb-1.5 uppercase tracking-wide">Hostname / Computer Name</label>
-                <input type="text" name="hostname" value="{{ old('hostname', $asset->hostname ?? '') }}" placeholder="e.g. PESO-PC-001, LMISD-LAP-03" class="w-full border border-blue-200 rounded-lg px-3 py-2.5 text-sm font-mono bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+
         </div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
@@ -137,7 +120,7 @@
 <div class="mb-7">
     <div class="flex items-center gap-2 mb-5 pb-2 border-b-2 border-purple-100">
         <span class="w-7 h-7 rounded-lg bg-purple-600 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">3</span>
-        <h3 class="font-bold text-slate-700 text-base">Division and User Assignment</h3>
+        <h3 class="font-bold text-slate-700 text-base">Division and User Details</h3>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div>
@@ -169,32 +152,13 @@
     </div>
 </div>
 
-{{-- SECTION 4: PURCHASE INFORMATION --}}
+{{-- SECTION 4: NOTES --}}
 <div class="mb-2">
-    <div class="flex items-center gap-2 mb-5 pb-2 border-b-2 border-amber-100">
-        <span class="w-7 h-7 rounded-lg bg-amber-500 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">4</span>
-        <h3 class="font-bold text-slate-700 text-base">Purchase Information</h3>
+    <div class="flex items-center gap-2 mb-5 pb-2 border-b-2 border-slate-100">
+        <h3 class="font-bold text-slate-700 text-base">Notes & Remarks</h3>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Purchase Date</label>
-            <input type="date" name="purchase_date" value="{{ old('purchase_date', isset($asset) ? $asset->purchase_date?->format('Y-m-d') : '') }}" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Purchase Cost</label>
-            <div class="relative">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">P</span>
-                <input type="number" step="0.01" name="purchase_cost" value="{{ old('purchase_cost', $asset->purchase_cost ?? '') }}" class="w-full border border-slate-200 rounded-lg pl-7 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-        </div>
-        <div>
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Warranty Expiry</label>
-            <input type="date" name="warranty_expiry" value="{{ old('warranty_expiry', isset($asset) ? $asset->warranty_expiry?->format('Y-m-d') : '') }}" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-            @error('warranty_expiry') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
-        </div>
-        <div class="sm:col-span-2 lg:col-span-3">
-            <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Notes / Remarks</label>
-            <textarea name="notes" rows="2" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('notes', $asset->notes ?? '') }}</textarea>
-        </div>
+    <div>
+        <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wide">Notes / Remarks</label>
+        <textarea name="notes" rows="3" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">{{ old('notes', $asset->notes ?? '') }}</textarea>
     </div>
 </div>

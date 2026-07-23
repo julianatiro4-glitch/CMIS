@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Label — {{ $asset->asset_tag }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         @media print {
             body { margin: 0; }
@@ -36,16 +35,11 @@
             </div>
         </div>
 
-        {{-- QR Code --}}
-        <div class="flex justify-center mb-4">
-            <div id="qrcode"></div>
-        </div>
-
         {{-- Asset Info --}}
         <div class="text-center mb-4">
             <p class="font-mono font-bold text-xl text-slate-800 tracking-wider">{{ $asset->asset_tag }}</p>
             <p class="text-sm font-semibold text-slate-700 mt-1">{{ $asset->name }}</p>
-            <p class="text-xs text-slate-400">{{ $asset->brand }} {{ $asset->model }}</p>
+            <p class="text-xs text-slate-400">{{ $asset->model }}</p>
         </div>
 
         <div class="space-y-1.5 text-xs border-t border-slate-100 pt-3">

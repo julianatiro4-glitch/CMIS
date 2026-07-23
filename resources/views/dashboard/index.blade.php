@@ -44,36 +44,35 @@
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 13.01 9 10.01"/>
             </svg>
         </div>
-        <p class="text-2xl font-bold text-green-600">{{ $stats['available'] }}</p>
-        <p class="text-xs text-slate-400 mt-0.5">Available</p>
+        <p class="text-2xl font-bold text-green-600">{{ $stats['good'] }}</p>
+        <p class="text-xs text-slate-400 mt-0.5">Good</p>
     </div>
     <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-        <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center mb-3">
-            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <div class="w-9 h-9 rounded-lg bg-yellow-50 flex items-center justify-center mb-3">
+            <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
         </div>
-        <p class="text-2xl font-bold text-blue-600">{{ $stats['in_use'] }}</p>
-        <p class="text-xs text-slate-400 mt-0.5">In Use</p>
+        <p class="text-2xl font-bold text-yellow-600">{{ $stats['fair'] }}</p>
+        <p class="text-xs text-slate-400 mt-0.5">Fair</p>
     </div>
     <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-        <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center mb-3">
-            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div class="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center mb-3">
+            <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
             </svg>
         </div>
-        <p class="text-2xl font-bold text-amber-600">{{ $stats['in_repair'] }}</p>
-        <p class="text-xs text-slate-400 mt-0.5">In Repair</p>
+        <p class="text-2xl font-bold text-orange-600">{{ $stats['for_repair'] }}</p>
+        <p class="text-xs text-slate-400 mt-0.5">For Repair</p>
     </div>
     <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-        <div class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center mb-3">
-            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/>
+        <div class="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center mb-3">
+            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
             </svg>
         </div>
-        <p class="text-2xl font-bold text-slate-500">{{ $stats['retired'] }}</p>
-        <p class="text-xs text-slate-400 mt-0.5">Retired / Lost</p>
+        <p class="text-2xl font-bold text-red-600">{{ $stats['unserviceable'] }}</p>
+        <p class="text-xs text-slate-400 mt-0.5">Unserviceable</p>
     </div>
 </div>
 
@@ -98,10 +97,6 @@
         <div class="rounded-lg border border-blue-100 bg-blue-50 p-3">
             <p class="text-2xl font-bold text-blue-700">{{ $attentionSummary['in_repair'] }}</p>
             <p class="text-xs text-blue-700 mt-1">In repair</p>
-        </div>
-        <div class="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
-            <p class="text-2xl font-bold text-emerald-700">{{ $attentionSummary['active_assignments'] }}</p>
-            <p class="text-xs text-emerald-700 mt-1">Active assignments</p>
         </div>
     </div>
 </div>
@@ -162,36 +157,12 @@
 
 </div>
 
-{{-- Row 3: Active Assignments + Open Tickets --}}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-    {{-- Active Assignments --}}
+{{-- Row 3: Open Maintenance Tickets --}}
+<div class="grid grid-cols-1 gap-5">
     <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-slate-800 text-sm">Active Assignments</h3>
-            <a href="{{ route('assignments.index') }}" class="text-xs text-blue-600 hover:underline">View all</a>
-        </div>
-        @forelse ($activeAssignments as $assignment)
-        <div class="flex items-center gap-3 py-2.5 border-b border-slate-100 last:border-0">
-            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-bold flex-shrink-0">
-                {{ strtoupper(substr($assignment->user->name, 0, 1)) }}
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-700 truncate">{{ $assignment->user->name }}</p>
-                <p class="text-xs text-slate-400 truncate">{{ $assignment->asset->asset_tag }} — {{ $assignment->asset->name }}</p>
-            </div>
-            <span class="text-xs text-slate-400 flex-shrink-0">{{ $assignment->assigned_at->format('M d') }}</span>
-        </div>
-        @empty
-        <p class="text-sm text-slate-400 text-center py-6">No active assignments.</p>
-        @endforelse
-    </div>
-
-    {{-- Open Maintenance Tickets --}}
-    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-slate-800 text-sm">Open Maintenance Tickets</h3>
-            <a href="{{ route('maintenance.index') }}" class="text-xs text-blue-600 hover:underline">View all</a>
+            <h3 class="font-bold text-slate-800 text-sm">Open Technical Support Tickets</h3>
+            <a href="{{ route('technical_support.index') }}" class="text-xs text-blue-600 hover:underline">View all</a>
         </div>
         @forelse ($openTickets as $ticket)
         <div class="flex items-center gap-3 py-2.5 border-b border-slate-100 last:border-0">
@@ -202,14 +173,14 @@
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-xs font-semibold text-slate-700 truncate">
-                    {{ $ticket->asset->asset_tag }} — {{ $ticket->asset->name }}
+                    {{ $ticket->division ?: 'No Division' }} — {{ $ticket->reported_by ?: 'No Reporter' }}
                 </p>
                 <p class="text-xs text-slate-400 truncate">
-                    {{ \Illuminate\Support\Str::limit($ticket->issue_description, 40) }}
+                    {{ \Illuminate\Support\Str::limit($ticket->issue_problem, 40) }}
                 </p>
             </div>
             <span class="text-xs px-2 py-0.5 rounded-full flex-shrink-0 font-semibold
-                {{ $ticket->status === 'open' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' }}">
+                {{ $ticket->status === 'done' ? 'bg-green-100 text-green-700' : ($ticket->status === 'failed' ? 'bg-red-100 text-red-700' : ($ticket->status === 'for_checking' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700')) }}">
                 {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
             </span>
         </div>

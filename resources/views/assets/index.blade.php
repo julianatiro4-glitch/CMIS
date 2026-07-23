@@ -10,30 +10,12 @@
 </form>
 
 {{-- Stat cards --}}
-<div class="grid grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-1 gap-4 mb-6">
     <div class="bg-white rounded-xl px-5 py-4 shadow-sm border border-slate-100 flex items-center gap-4">
         <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         </div>
-        <div><p class="text-2xl font-bold text-slate-800">{{ $stats['total'] }}</p><p class="text-xs text-slate-400">Total</p></div>
-    </div>
-    <div class="bg-white rounded-xl px-5 py-4 shadow-sm border border-slate-100 flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 13.01 9 10.01"/></svg>
-        </div>
-        <div><p class="text-2xl font-bold text-green-600">{{ $stats['available'] }}</p><p class="text-xs text-slate-400">Available</p></div>
-    </div>
-    <div class="bg-white rounded-xl px-5 py-4 shadow-sm border border-slate-100 flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        </div>
-        <div><p class="text-2xl font-bold text-blue-600">{{ $stats['in_use'] }}</p><p class="text-xs text-slate-400">In Use</p></div>
-    </div>
-    <div class="bg-white rounded-xl px-5 py-4 shadow-sm border border-slate-100 flex items-center gap-4">
-        <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        </div>
-        <div><p class="text-2xl font-bold text-amber-600">{{ $stats['in_repair'] }}</p><p class="text-xs text-slate-400">In Repair</p></div>
+        <div><p class="text-2xl font-bold text-slate-800">{{ $stats['total'] }}</p><p class="text-xs text-slate-400">Total Assets</p></div>
     </div>
 </div>
 
@@ -56,9 +38,11 @@
             <a href="{{ route('assets.export', request()->query()) }}" class="flex items-center gap-1.5 text-xs font-medium text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV
             </a>
+            @if(auth()->user()->canManage())
             <a href="{{ route('assets.create') }}" class="flex items-center gap-1.5 text-xs font-semibold text-white px-4 py-1.5 rounded-lg hover:opacity-90" style="background:#0d2a5e;">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> New Asset
             </a>
+            @endif
         </div>
     </div>
 
@@ -72,12 +56,6 @@
                    placeholder="Search tag, name, user..."
                    class="border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs w-56 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
         </div>
-        <select name="status" class="border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-            <option value="">All Statuses</option>
-            @foreach ($statuses as $status)
-                <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>
-            @endforeach
-        </select>
         <select name="division_id" class="border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
             <option value="">All Divisions</option>
             @foreach ($divisions as $d)
@@ -87,7 +65,7 @@
             @endforeach
         </select>
         <button class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">Filter</button>
-        @if(request()->hasAny(['q','status','division_id']))
+        @if(request()->hasAny(['q','division_id']))
             <a href="{{ route('assets.index') }}" class="text-xs text-red-500 hover:underline">Clear</a>
         @endif
     </form>
@@ -102,19 +80,19 @@
                     @endif
                     <th class="px-4 py-3">Asset</th>
                     <th class="px-4 py-3">Division</th>
+                    <th class="px-4 py-3">Status</th>
                     <th class="px-4 py-3">CPU</th>
                     <th class="px-4 py-3">RAM</th>
                     <th class="px-4 py-3">Storage</th>
                     <th class="px-4 py-3">OS</th>
                     <th class="px-4 py-3">Utilized By</th>
-                    <th class="px-4 py-3">Status</th>
                     <th class="px-4 py-3 text-right">Actions</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
                 @forelse ($assets as $asset)
                 @php
-                $badge = ['available'=>'bg-green-100 text-green-700','in_use'=>'bg-blue-100 text-blue-700','in_repair'=>'bg-amber-100 text-amber-700','retired'=>'bg-slate-100 text-slate-500','lost'=>'bg-red-100 text-red-700'];
+                $conditionColors = ['good'=>'bg-green-100 text-green-700','fair'=>'bg-yellow-100 text-yellow-700','for_repair'=>'bg-orange-100 text-orange-700','unserviceable'=>'bg-red-100 text-red-700'];
                 @endphp
                 <tr class="hover:bg-slate-50 transition-colors">
                     @if(auth()->user()->canManage())
@@ -125,7 +103,7 @@
                     <td class="px-4 py-3">
                         <p class="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded inline-block">{{ $asset->asset_tag }}</p>
                         <p class="text-xs font-medium text-slate-800 mt-0.5">{{ $asset->name }}</p>
-                        <p class="text-xs text-slate-400">{{ trim($asset->brand . ' ' . $asset->model) ?: '' }}</p>
+                        <p class="text-xs text-slate-400">{{ $asset->model ?: '' }}</p>
                     </td>
                     <td class="px-4 py-3 text-xs text-slate-600">
                         @if ($asset->division)
@@ -137,6 +115,11 @@
                             <span class="text-slate-300">—</span>
                         @endif
                     </td>
+                    <td class="px-4 py-3 text-xs">
+                        <span class="px-2 py-0.5 rounded-full font-bold {{ $conditionColors[$asset->condition ?? 'good'] ?? 'bg-slate-100 text-slate-500' }}">
+                            {{ ucfirst(str_replace('_', ' ', $asset->condition ?? 'good')) }}
+                        </span>
+                    </td>
                     <td class="px-4 py-3 text-xs text-slate-600 max-w-32">
                         <span title="{{ $asset->cpu }}">{{ $asset->cpu ? \Illuminate\Support\Str::limit($asset->cpu, 20) : '—' }}</span>
                     </td>
@@ -146,11 +129,6 @@
                         <span title="{{ $asset->operating_system }}">{{ $asset->operating_system ? \Illuminate\Support\Str::limit($asset->operating_system, 15) : '—' }}</span>
                     </td>
                     <td class="px-4 py-3 text-xs text-slate-600">{{ $asset->utilized_by ?: '—' }}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $badge[$asset->status] ?? 'bg-slate-100 text-slate-500' }}">
-                            {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
-                        </span>
-                    </td>
                     <td class="px-4 py-3 text-right">
     <div class="flex items-center justify-end gap-2">
         <a href="{{ route('assets.show', $asset) }}"
@@ -194,7 +172,9 @@
                     <td colspan="{{ auth()->user()->canManage() ? '10' : '9' }}" class="px-5 py-14 text-center">
                         <svg class="w-12 h-12 text-slate-200 mx-auto mb-3" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
                         <p class="text-slate-500 font-medium">No assets found</p>
+                        @if(auth()->user()->canManage())
                         <a href="{{ route('assets.create') }}" class="inline-block mt-3 text-xs font-semibold text-white px-4 py-2 rounded-lg" style="background:#0d2a5e;">+ Add First Asset</a>
+                        @endif
                     </td>
                 </tr>
                 @endforelse

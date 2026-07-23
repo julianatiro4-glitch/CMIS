@@ -13,7 +13,7 @@ class Asset extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public const STATUSES = ['available', 'in_use', 'in_repair', 'retired', 'lost'];
+
 
     public const CONDITIONS = ['good', 'fair', 'for_repair', 'unserviceable'];
 
@@ -51,7 +51,7 @@ class Asset extends Model
     ];
 
     protected $fillable = [
-        'asset_tag', 'name', 'category_id', 'division_id',
+        'asset_tag', 'name', 'category_id', 'location_id', 'division_id',
         'serial_number', 'status',
         'purchase_date', 'purchase_cost', 'warranty_expiry',
         'specifications', 'notes',
@@ -72,12 +72,42 @@ class Asset extends Model
     public function category(): BelongsTo   { return $this->belongsTo(Category::class); }
     public function location(): BelongsTo   { return $this->belongsTo(Location::class); }
     public function division(): BelongsTo   { return $this->belongsTo(Division::class); }
-    public function assignments(): HasMany  { return $this->hasMany(Assignment::class); }
-    public function maintenanceRecords(): HasMany { return $this->hasMany(MaintenanceRecord::class); }
 
-    public function currentAssignment(): HasOne
+    public function assignments(): HasMany { return $this->hasMany(Assignment::class); }
+
+    public function activeAssignment(): HasOne
     {
         return $this->hasOne(Assignment::class)->whereNull('returned_at')->latestOfMany('assigned_at');
+    }
+
+    public static function statusLabel(string $status): string
+    {
+        return self::STATUS_LABELS[$status] ?? ucfirst(str_replace('_', ' ', $status));
+    }
+
+    public function scopeCategory($query, ?int $categoryId)
+    {
+        return $categoryId ? $query->where('category_id', $categoryId) : $query;
+    }
+
+    public function scopeLocation($query, ?int $locationId)
+    {
+        return $locationId ? $query->where('location_id', $locationId) : $query;
+    }
+
+    public function scopeOperatingSystem($query, ?string $os)
+    {
+        return $os ? $query->where('operating_system', $os) : $query;
+    }
+
+    public function scopeRam($query, ?string $ram)
+    {
+        return $ram ? $query->where('ram_total', $ram) : $query;
+    }
+
+    public function scopeStorage($query, ?string $storage)
+    {
+        return $storage ? $query->where('storage_capacity', $storage) : $query;
     }
 
     public function scopeSearch($query, ?string $term)
@@ -87,9 +117,6 @@ class Asset extends Model
             $q->where('asset_tag', 'like', "%{$term}%")
               ->orWhere('name', 'like', "%{$term}%")
               ->orWhere('serial_number', 'like', "%{$term}%")
-              ->orWhere('brand', 'like', "%{$term}%")
-              ->orWhere('model', 'like', "%{$term}%")
-              ->orWhere('hostname', 'like', "%{$term}%")
               ->orWhere('utilized_by', 'like', "%{$term}%")
               ->orWhere('cpu', 'like', "%{$term}%");
         });

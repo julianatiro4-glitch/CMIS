@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
-use App\Models\Assignment;
-use App\Models\MaintenanceRecord;
+use App\Models\TechnicalSupport;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -13,10 +12,10 @@ class DashboardController extends Controller
     {
         $stats = [
             'total' => Asset::count(),
-            'available' => Asset::where('status', 'available')->count(),
-            'in_use' => Asset::where('status', 'in_use')->count(),
-            'in_repair' => Asset::where('status', 'in_repair')->count(),
-            'retired' => Asset::whereIn('status', ['retired', 'lost'])->count(),
+            'good' => Asset::where('condition', 'good')->count(),
+            'fair' => Asset::where('condition', 'fair')->count(),
+            'for_repair' => Asset::where('condition', 'for_repair')->count(),
+            'unserviceable' => Asset::where('condition', 'unserviceable')->count(),
         ];
 
         $byCategory = Asset::query()
@@ -31,15 +30,8 @@ class DashboardController extends Controller
             ->sortByDesc('count')
             ->values();
 
-        $activeAssignments = Assignment::with(['asset', 'user'])
-            ->active()
-            ->latest('assigned_at')
-            ->limit(5)
-            ->get();
-
-        $openTickets = MaintenanceRecord::with('asset')
-            ->openOrInProgress()
-            ->latest('opened_at')
+        $openTickets = TechnicalSupport::openOrInProgress()
+            ->latest('date')
             ->limit(5)
             ->get();
 
@@ -51,16 +43,14 @@ class DashboardController extends Controller
             ->get();
 
         $attentionSummary = [
-            'open_tickets' => MaintenanceRecord::whereIn('status', ['open', 'in_progress'])->count(),
+            'open_tickets' => TechnicalSupport::whereIn('status', ['open', 'in_progress'])->count(),
             'warranty_alerts' => $expiringWarranties->count(),
-            'in_repair' => $stats['in_repair'],
-            'active_assignments' => $activeAssignments->count(),
+            'in_repair' => $stats['for_repair'],
         ];
 
         return view('dashboard.index', [
             'stats' => $stats,
             'byCategory' => $byCategory,
-            'activeAssignments' => $activeAssignments,
             'openTickets' => $openTickets,
             'expiringWarranties' => $expiringWarranties,
             'attentionSummary' => $attentionSummary,

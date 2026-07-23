@@ -18,7 +18,7 @@
     <label class="block text-sm font-medium mb-1">Role</label>
     <select name="role" class="w-full border rounded px-3 py-2 text-sm">
         @foreach ($roles as $role)
-            <option value="{{ $role }}" @selected(old('role', $user->role ?? 'viewer') === $role)>
+            <option value="{{ $role }}" @selected(old('role', $user->role ?? 'it_staff') === $role)>
                 {{ ucfirst(str_replace('_', ' ', $role)) }}
             </option>
         @endforeach

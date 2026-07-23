@@ -1,0 +1,19 @@
+# CMIS
+initgit
+add
+README.mdgit
+commit
+-m
+first commit
+git
+branch
+-M
+maingit
+remote
+add
+origin
+git@github.com:julianatiro4-glitch/CMIS.gitgit
+push
+-u
+origin
+main

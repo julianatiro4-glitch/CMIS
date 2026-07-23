@@ -13,7 +13,6 @@
         <a href="{{ route('categories.index') }}" class="text-sm hover:underline">Categories</a>
         <a href="{{ route('locations.index') }}" class="text-sm hover:underline">Locations</a>
         @auth
-            <a href="{{ route('assignments.index') }}" class="text-sm hover:underline">Assignments</a>
             <a href="{{ route('maintenance.index') }}" class="text-sm hover:underline">Maintenance</a>
         @endauth
 

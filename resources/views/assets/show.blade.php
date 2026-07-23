@@ -35,9 +35,6 @@ $conditionColors = [
                 <span class="font-mono text-sm font-bold bg-slate-100 px-3 py-1 rounded-lg text-slate-700">
                     {{ $asset->asset_tag }}
                 </span>
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold border {{ $statusColors[$asset->status] ?? 'bg-slate-100 text-slate-500' }}">
-                    {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
-                </span>
                 @if ($asset->condition)
                 <span class="px-2.5 py-1 rounded-full text-xs font-bold {{ $conditionColors[$asset->condition] ?? 'bg-slate-100 text-slate-500' }}">
                     {{ ucfirst(str_replace('_', ' ', $asset->condition)) }}
@@ -45,7 +42,7 @@ $conditionColors = [
                 @endif
             </div>
             <h2 class="text-lg font-bold text-slate-800 mt-1">{{ $asset->name }}</h2>
-            <p class="text-sm text-slate-400">{{ trim($asset->brand . ' ' . $asset->model) ?: 'No brand/model recorded' }}</p>
+
         </div>
     </div>
     <div class="flex flex-wrap gap-2 flex-shrink-0">
@@ -55,7 +52,7 @@ $conditionColors = [
                 <rect x="3" y="3" width="18" height="18" rx="2"/>
                 <path d="M7 7h.01M17 7h.01M7 17h.01"/>
             </svg>
-            Print QR Label
+            Print Label
         </a>
         <a href="{{ route('assets.edit', $asset) }}"
            class="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg text-white hover:opacity-90 transition-all"
@@ -107,20 +104,13 @@ $conditionColors = [
                     <p class="text-sm font-semibold text-slate-800">{{ $asset->storage_capacity ?: '—' }}</p>
                 </div>
 
-                <div class="bg-slate-50 rounded-xl p-4">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Storage Device</p>
-                    <p class="text-sm font-semibold text-slate-800">{{ $asset->storage_device ?: '—' }}</p>
-                </div>
+
 
                 <div class="bg-slate-50 rounded-xl p-4 sm:col-span-2">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Operating System</p>
                     <p class="text-sm font-semibold text-slate-800">{{ $asset->operating_system ?: '—' }}</p>
                 </div>
 
-                <div class="bg-slate-50 rounded-xl p-4">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Hostname</p>
-                    <p class="text-sm font-semibold font-mono text-slate-800">{{ $asset->hostname ?: '—' }}</p>
-                </div>
 
                 <div class="bg-slate-50 rounded-xl p-4 flex items-center gap-3">
                     <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 {{ $asset->has_crowdstrike ? 'bg-green-100' : 'bg-slate-100' }}">
@@ -155,7 +145,7 @@ $conditionColors = [
                     <circle cx="9" cy="7" r="4"/>
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
-                <h3 class="font-bold text-slate-800 text-sm">Division & User Assignment</h3>
+                <h3 class="font-bold text-slate-800 text-sm">Division & User Details</h3>
             </div>
             <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
@@ -176,10 +166,6 @@ $conditionColors = [
                     <p class="text-sm font-semibold text-slate-800">{{ $asset->utilized_by ?: '—' }}</p>
                 </div>
 
-                <div class="bg-slate-50 rounded-xl p-4">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Office Location</p>
-                    <p class="text-sm font-semibold text-slate-800">{{ $asset->location?->name ?? '—' }}</p>
-                </div>
 
                 <div class="bg-slate-50 rounded-xl p-4">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-1">Connectivity</p>
@@ -234,10 +220,7 @@ $conditionColors = [
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Category</p>
                     <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ $asset->category?->name ?? '—' }}</p>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Brand / Model</p>
-                    <p class="text-sm font-semibold text-slate-800 mt-0.5">{{ trim($asset->brand . ' ' . $asset->model) ?: '—' }}</p>
-                </div>
+
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Serial Number</p>
                     <p class="text-sm font-mono font-semibold text-slate-800 mt-0.5">{{ $asset->serial_number ?? '—' }}</p>
@@ -251,41 +234,7 @@ $conditionColors = [
             </div>
         </div>
 
-        {{-- Purchase Info --}}
-        <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="px-5 py-3.5 border-b border-slate-100 flex items-center gap-2" style="background:#fffbeb;">
-                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                </svg>
-                <h3 class="font-bold text-slate-800 text-sm">Purchase Info</h3>
-            </div>
-            <div class="p-5 space-y-3">
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Purchase Date</p>
-                    <p class="text-sm font-semibold text-slate-800 mt-0.5">
-                        {{ $asset->purchase_date?->format('M d, Y') ?? '—' }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Purchase Cost</p>
-                    <p class="text-sm font-semibold text-slate-800 mt-0.5">
-                        {{ $asset->purchase_cost ? '&#8369;' . number_format($asset->purchase_cost, 2) : '—' }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Warranty Expiry</p>
-                    <p class="text-sm font-semibold mt-0.5 {{ $asset->warranty_expiry?->isPast() ? 'text-red-600' : 'text-slate-800' }}">
-                        {{ $asset->warranty_expiry?->format('M d, Y') ?? '—' }}
-                        @if ($asset->warranty_expiry?->isPast())
-                            <span class="text-xs ml-1 bg-red-100 text-red-600 px-1.5 py-0.5 rounded">Expired</span>
-                        @elseif ($asset->warranty_expiry?->diffInDays(now()) < 90)
-                            <span class="text-xs ml-1 bg-amber-100 text-amber-600 px-1.5 py-0.5 rounded">Expiring soon</span>
-                        @endif
-                    </p>
-                </div>
-            </div>
-        </div>
+
 
         {{-- Record timestamps --}}
         <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">

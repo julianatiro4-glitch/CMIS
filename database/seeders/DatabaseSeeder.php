@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
             ['name' => $attrs['name'], 'location_id' => $attrs['location_id']]
         ));
 
-        $statuses = Asset::STATUSES;
 
         for ($i = 1; $i <= 25; $i++) {
             $assetTag = sprintf('CMP-%04d', $i);
@@ -45,12 +44,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Sample Computer '.$i,
                 'category_id' => $categories->random()->id,
                 'location_id' => $locations->random()->id,
-                'brand' => ['Dell', 'HP', 'Lenovo', 'Asus'][array_rand(['Dell', 'HP', 'Lenovo', 'Asus'])],
                 'serial_number' => 'SN'.strtoupper(uniqid()),
-                'status' => $statuses[array_rand($statuses)],
-                'purchase_date' => now()->subMonths(rand(1, 36)),
-                'purchase_cost' => rand(300, 2000),
-                'warranty_expiry' => now()->addMonths(rand(1, 24)),
             ]);
             if ($asset->trashed()) {
                 $asset->restore();

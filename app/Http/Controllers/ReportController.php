@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Asset;
 use App\Models\Category;
 use App\Models\Division;
-use App\Models\MaintenanceRecord;
+use App\Models\TechnicalSupport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -13,11 +13,6 @@ class ReportController extends Controller
 {
     public function index(): View
     {
-        // ── Status breakdown ──────────────────────────────────────
-        $byStatus = collect(Asset::STATUSES)->mapWithKeys(fn ($s) => [
-            $s => Asset::where('status', $s)->count(),
-        ]);
-
         // ── Condition breakdown ───────────────────────────────────
         $byCondition = collect(Asset::CONDITIONS)->mapWithKeys(fn ($c) => [
             $c => Asset::where('condition', $c)->count(),
@@ -83,13 +78,13 @@ class ReportController extends Controller
             ->get();
 
         // ── Maintenance summary ───────────────────────────────────
-        $openTickets       = MaintenanceRecord::where('status', 'open')->count();
-        $inProgressTickets = MaintenanceRecord::where('status', 'in_progress')->count();
-        $resolvedTickets   = MaintenanceRecord::where('status', 'resolved')->count();
+        $openTickets       = TechnicalSupport::where('status', 'open')->count();
+        $inProgressTickets = TechnicalSupport::where('status', 'in_progress')->count();
+        $resolvedTickets   = TechnicalSupport::where('status', 'resolved')->count();
 
-        $avgResolutionDays = MaintenanceRecord::where('status', 'resolved')
+        $avgResolutionDays = TechnicalSupport::where('status', 'resolved')
             ->whereNotNull('resolved_at')
-            ->selectRaw('AVG(julianday(resolved_at) - julianday(opened_at)) as avg_days')
+            ->selectRaw('AVG(julianday(resolved_at) - julianday(date)) as avg_days')
             ->value('avg_days');
 
         return view('reports.index', compact(

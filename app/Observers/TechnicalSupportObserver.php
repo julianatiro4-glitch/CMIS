@@ -3,14 +3,13 @@
 namespace App\Observers;
 
 use App\Models\ActivityLog;
-use App\Models\MaintenanceRecord;
+use App\Models\TechnicalSupport;
 
-class MaintenanceRecordObserver
+class TechnicalSupportObserver
 {
-    public function created(MaintenanceRecord $record): void
+    public function created(TechnicalSupport $record): void
     {
-        $record->loadMissing('asset');
-        $label = ($record->asset?->asset_tag ?? $record->asset_id) . ': ' . substr($record->issue_description, 0, 50);
+        $label = "Technical Support #{$record->id}";
 
         ActivityLog::record(
             action: 'created',
@@ -20,7 +19,7 @@ class MaintenanceRecordObserver
         );
     }
 
-    public function updated(MaintenanceRecord $record): void
+    public function updated(TechnicalSupport $record): void
     {
         $changed = collect($record->getDirty())
             ->except(ActivityLog::$excludedFields)
@@ -39,8 +38,7 @@ class MaintenanceRecordObserver
             ->only($changed)
             ->toArray();
 
-        $record->loadMissing('asset');
-        $label = ($record->asset?->asset_tag ?? $record->asset_id) . ': ' . substr($record->issue_description, 0, 50);
+        $label = "Technical Support #{$record->id}";
 
         ActivityLog::record(
             action: 'updated',
@@ -51,10 +49,9 @@ class MaintenanceRecordObserver
         );
     }
 
-    public function deleted(MaintenanceRecord $record): void
+    public function deleted(TechnicalSupport $record): void
     {
-        $record->loadMissing('asset');
-        $label = ($record->asset?->asset_tag ?? $record->asset_id) . ': ' . substr($record->issue_description, 0, 50);
+        $label = "Technical Support #{$record->id}";
 
         ActivityLog::record(
             action: 'deleted',
@@ -64,9 +61,9 @@ class MaintenanceRecordObserver
         );
     }
 
-    private function getValues(MaintenanceRecord $record): array
+    private function getValues(TechnicalSupport $record): array
     {
-        return collect($record->getAttributes())
+        return collect($record->toArray())
             ->except(ActivityLog::$excludedFields)
             ->toArray();
     }
